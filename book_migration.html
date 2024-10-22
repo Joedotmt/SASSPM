@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Migration</title>
+    <script src="/js-sdk-0.19.0/dist/pocketbase.umd.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto Mono">
+    <style>
+        body {
+            background-color: black;
+            color: rgb(0, 175, 96);
+            font-family: 'Roboto Mono';
+            font-weight: bold;
+            font-size: 1.2em;
+            --color-text: rgb(0, 175, 96);
+            --font-text: 'Roboto Mono';
+            min-height: 100dvh;
+            margin: 0;
+        }
+
+        input {
+            margin-top: 1em;
+            font-size: 1em;
+            border: 3px solid var(--color-text);
+            overflow: visible;
+            font-family: 'Roboto Mono';
+        }
+
+        input::file-selector-button {
+            font-weight: bold;
+            color: var(--color-text);
+            background-color: black;
+            font-family: var(--font-text);
+            padding: 0.5em;
+            border-radius: 0px;
+            border: 0;
+            border-right: 3px solid var(--color-text);
+            margin-right: 0.7em;
+        }
+
+        input::file-selector-button:hover {
+            font-weight: lighter;
+        }
+
+        input::file-selector-button:active {
+            font-weight: bold;
+        }
+
+        table,
+        th,
+        td {
+            border: 2px solid var(--color-text);
+            border-collapse: collapse;
+        }
+
+        table {
+            translate: 0 -2px;
+        }
+
+        tr:hover {
+            background-color: rgba(0, 175, 96, 0.189);
+        }
+
+        th {
+            background-color: black;
+        }
+
+        .egg:hover {
+            background-color: rgba(0, 175, 96, 0.189);
+        }
+
+        .egg:active {
+            background-color: rgba(0, 175, 96, 0.603);
+        }
+
+        button {
+            border-radius: 0;
+            background-color: black;
+            border: 2px dashed var(--color-text);
+            color: var(--color-text);
+            font-size: 1.5em;
+            font-family: 'roboto mono';
+        }
+
+        button:hover {
+            border: 2px solid var(--color-text);
+        }
+
+        button:active {
+            background-color: rgba(0, 175, 96, 0.189);
+        }
+    </style>
+</head>
+
+<body style="display: flex; flex-direction: column;">
+
+    <div style="display: flex;">
+        <div class="egg" onclick="window.location = 'index.html'"
+            style="text-wrap: nowrap; font-size: 1.8em; user-select: none;">[go back]</div>
+        <div style="text-align: right; width: 100%; font-size: 1.8em;">Hello, Welcome to book migrations (:</div>
+    </div>
+
+
+    <input onchange="inputchange()" type="file" id="UploadFile" accept=".csv" />
+    <table style="height: -webkit-fill-available;" id="info_table">
+
+    </table>
+
+
+    <div style="    position: sticky; margin-top: auto;
+    bottom: 0;
+    padding: 1em;
+    left: 0;
+    width: -webkit-fill-available; backdrop-filter: blur(20px);
+    background-color: rgba(46, 255, 161, 0.107); height: 4em; overflow: hidden;">Choose action:
+        <div style="display: flex; gap: 1em;">
+            <button id="update_button">Update</button>
+            <button onclick="createBooks()" id="add_button">Create</button>
+            <button id="delete_button">Delete</button>
+            <div id="tooltip" style="width: 100%; text-align: end; height: 2em;">[None]</div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script>
+        const pb = new PocketBase('http://127.0.0.1:8090');
+        let csvData;
+        function create_random_string(length)
+        {
+            const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            let result = "";
+            for (let i = 0; i < length; i++)
+            {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        async function generate_unique_book_id()
+        {
+            generated_id = "";
+            for (let i = 0; i < 1000; i++)
+            {
+                try
+                {
+                    generated_id = create_random_string(4)
+                    await pb.collection('books').getFirstListItem(`book_id="${generated_id}"`);
+                    console.error("trying to generate a book id again because of a collision")
+                } catch (err)
+                {
+                    if (err.data.code == '404')
+                    {
+                        console.log("ejejej")
+                        return generated_id;
+                    }
+                }
+            }
+        }
+
+
+        
+        async function createBooks()
+        {
+            counter = 0;
+            for (const row of csvData)
+            {
+                let data = {"":""}
+                await generate_unique_book_id().then(generated_id =>
+                {
+                    data = {
+                        "book_id": generated_id,
+                        "legacy_book_id": row.legacy_book_id,
+                        "title": row.title,
+                        "author": row.author,
+                        "isbn": row.isbn,
+                        "description": row.description,
+                        "classification_label": row.classification_label,
+                        "level": row.level,
+                        "subject": "la303mtkbxgrr0v",
+                        "lost": row.lost,
+                        "scrapped": row.scrapped,
+                        "price": row.price,
+                        "legacy_date_entered": row.legacy_date_entered,
+                        "preview_url_override": row.preview_url_override
+                    };
+                })
+                await console.log(data)
+                try {
+                    await pb.collection('books').create(data);
+                } catch (error) {
+                    console.error("Error: ",error.response)
+                }
+                
+                await counter++
+                await console.log(counter)
+            }
+        }
+        function createBook(data)
+        {
+
+        }
+
+        document.querySelectorAll("button, input").forEach(btn =>
+        {
+            btn.addEventListener("mouseout", function ()
+            {
+                tooltip.innerText = "[None]"
+            });
+        });
+
+
+        UploadFile.addEventListener("mouseover", function ()
+        {
+            tooltip.innerText = "Upload .csv file to use for action"
+        });
+        add_button.addEventListener("mouseover", function ()
+        {
+            tooltip.innerText = "Accepted Fields: title, author, isbn, description, classification_label, level, subject, lost, scrapped, price, legacy_date_entered, preview_url_override"
+        });
+        delete_button.addEventListener("mouseover", function ()
+        {
+            tooltip.innerText = "Accepted Fields: id"
+        });
+        update_button.addEventListener("mouseover", function ()
+        {
+            tooltip.innerText = "Accepted Fields: id, title, author, isbn, description, classification_label, level, subject, lost, scrapped, price, legacy_date_entered, preview_url_override"
+        });
+
+
+
+        const csvDataFile = document.getElementById("UploadFile");
+        function inputchange()
+        {
+            const input = csvDataFile.files[0];
+            const reader = new FileReader();
+            reader.readAsText(input);
+            reader.onload = function (e) 
+            {
+                const text = e.target.result;
+                csvData = d3.csvParse(text);
+                console.log(csvData)
+
+                header = document.createElement("tr")
+                info_table.appendChild(header)
+                done_or_not = document.createElement("th")
+                done_or_not.innerText = "status"
+                header.appendChild(done_or_not)
+                csvData.columns.forEach(column =>
+                {
+                    ele = document.createElement("th")
+                    ele.innerText = column
+                    header.appendChild(ele)
+                });
+                csvData.forEach(row =>
+                {
+                    ele = document.createElement("tr")
+                    info_table.appendChild(ele)
+                    ele.appendChild(document.createElement("td"))
+                    Object.values(row).forEach(cell =>
+                    {
+                        e = document.createElement("td")
+                        e.innerText = cell
+                        ele.appendChild(e)
+                    });
+                });
+            };
+        }
+    </script>
+</body>
+
+</html>
