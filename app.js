@@ -12,7 +12,7 @@ function connect_pb(address)
     imfofiff.value = address;
     if (address == null)
     {
-        address = "http://localhost:8090";
+        address = "https://demo-petition.pockethost.io/";
         imfofiff.value = address;
         window.alert("No pocketbase server found. Default set to " + address);
         open_account_dialog();
@@ -1217,26 +1217,48 @@ function next_slide(num)
 
 
 
+
+
+
+
+
+
 const canvas = document.getElementById('signatureCanvas');
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
-// Set white background
+// Canvas setup - only prevent default actions on the canvas itself
+canvas.style.touchAction = 'none';
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 ctx.fillStyle = 'black';
 
 const line_width = 8;
 
+function getCoordinates(e)
+{
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    return {
+        x: Math.min(Math.max(0, clientX - rect.left), canvas.width),
+        y: Math.min(Math.max(0, clientY - rect.top), canvas.height)
+    };
+}
+
 function draw(e)
 {
+    // Only prevent default if the event is on the canvas
+    if (e.target === canvas)
+    {
+        e.preventDefault();
+    }
     if (!isDrawing) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = Math.min(Math.max(0, e.clientX - rect.left), canvas.width);
-    const y = Math.min(Math.max(0, e.clientY - rect.top), canvas.height);
+    const { x, y } = getCoordinates(e);
 
     // Draw a circle at each point
     ctx.beginPath();
@@ -1258,17 +1280,18 @@ function draw(e)
 
 function startDrawing(e)
 {
-    isDrawing = true;
-    const rect = canvas.getBoundingClientRect();
-    [lastX, lastY] = [
-        Math.min(Math.max(0, e.clientX - rect.left), canvas.width),
-        Math.min(Math.max(0, e.clientY - rect.top), canvas.height)
-    ];
+    if (e.target === canvas)
+    {
+        e.preventDefault();
+        isDrawing = true;
+        const { x, y } = getCoordinates(e);
+        [lastX, lastY] = [x, y];
 
-    // Draw initial circle
-    ctx.beginPath();
-    ctx.arc(lastX, lastY, line_width / 2, 0, Math.PI * 2);
-    ctx.fill();
+        // Draw initial circle
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, line_width / 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
 }
 
 function stopDrawing()
@@ -1276,11 +1299,19 @@ function stopDrawing()
     isDrawing = false;
 }
 
+// Mouse events - only attach to canvas
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mousemove', draw);
-document.addEventListener('mousemove', draw);
-document.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseleave', stopDrawing);
 
+// Touch events - only attach to canvas
+canvas.addEventListener('touchstart', startDrawing, { passive: false });
+canvas.addEventListener('touchmove', draw, { passive: false });
+canvas.addEventListener('touchend', stopDrawing);
+canvas.addEventListener('touchcancel', stopDrawing);
+
+// Clear button
 document.getElementById('clear').addEventListener('click', () =>
 {
     ctx.fillStyle = 'white';
@@ -1288,18 +1319,18 @@ document.getElementById('clear').addEventListener('click', () =>
     ctx.fillStyle = 'black';
 });
 
-document.getElementById('save').addEventListener('click', () =>
-{
-    const now = new Date();
-    const dateString = now.toLocaleString();
-    ctx.font = '12px Arial';
-    ctx.fillText(dateString, 10, canvas.height - 10);
 
-    const link = document.createElement('a');
-    link.download = 'signature.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-});
+
+
+
+
+
+
+
+
+
+
+
 
 
 
