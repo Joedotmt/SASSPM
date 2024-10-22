@@ -343,6 +343,9 @@
          <button class="button-circle" id="account_button" onclick="open_account_dialog()" style="padding: 0; border-width: 0;">
             <span class="material-symbols-outlined" style="font-size: 2.8em; z-index: 1; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;"> account_circle </span>
          </button>
+         <button class="button-circle" style="border: none; scale:0.8" onclick="if (iekeeiie33frfr.innerText == 'fullscreen') {iekeeiie33frfr.innerText = 'fullscreen_exit'; document.body.requestFullscreen();} else {iekeeiie33frfr.innerText = 'fullscreen'; exitFullscreen()}"><span id="iekeeiie33frfr" class="material-symbols-outlined">
+               fullscreen
+            </span></button>
          <select id="collection_select" style="display: none; width: 10em; margin: 0.2em; font-size: 18px;">
             <option value="books">Books</option>
             <option value="borrowers">Borrowers</option>
@@ -750,7 +753,8 @@
             <div style="position: absolute; bottom: -20%;">
                <div id="dpdb_created"></div>
                <div id="dpdb_updated"></div>
-               <div id="dpdb_id" style="opacity: 0.5; margin-bottom: 1em;"></div>
+               <div id="dpdb_id" style="opacity: 0.5;"></div>
+               <button onclick="delete_current_signature()" style=" margin-bottom: 1em;">Delete</button>
             </div>
 
          </div>

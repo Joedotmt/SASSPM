@@ -1319,6 +1319,13 @@ document.getElementById('clear').addEventListener('click', () =>
     ctx.fillStyle = 'black';
 });
 
+function delete_current_signature()
+{
+    pb.collection('borrowers').delete(dpdb_id.innerText.split(": ")[1]);
+    change_display_area_mode("none", display_area_borrower);
+    list_selected_collection();
+}
+
 
 
 
@@ -1985,28 +1992,7 @@ function updateBorrowerDisplayPanel(borrower)
 
 async function updateBorrowerBooks(borrowerId)
 {
-    try
-    {
-        const transactionList = await pb
-            .collection("transactions")
-            .getFullList({
-                filter: `person.id = "${borrowerId}" && returned = false`,
-                expand: "book",
-            });
-
-        document
-            .querySelectorAll(".book_view")
-            .forEach((bookView) => bookView.remove());
-
-        transactionList.forEach((transaction) =>
-        {
-            const bookView = createBookView(transaction);
-            borrower_currently_borrowing_books.appendChild(bookView);
-        });
-    } catch (e)
-    {
-        console.error(e);
-    }
+    return;
 }
 
 async function display_in_isolation(id)
