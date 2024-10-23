@@ -100,21 +100,15 @@
    </style>
 
    <dialog id="signature_dialog">
-      <div id="slide_1" class="slide-container">
-         <div class="input-container">
-            <input style="font-family: var(--the-robo-font);" class="input-google" id="signature_email_input" autocomplete="off" type="email" />
-            <label style="font-family: var(--the-robo-font);" class="input-placeholder">Email</label>
-         </div>
-         <label style="font-family: var(--the-robo-font);" class="email-domain">@sanandrea.edu.mt</label>
-         <button onclick="next_slide(1)" class="next-btn">
-            <span class="material-symbols-outlined">arrow_forward</span>
-         </button>
-      </div>
-      <div style="translate: 500%;" id="slide_2" class="slide-container">
+      <button id="clear2" class="button-circle" style="border: none; scale:0.8; position: fixed; right: 0; bottom: 0;" onclick="signature_dialog.close(); first_slide()"><span class="material-symbols-outlined">
+            arrow_back
+         </span></button>
+
+      <div style="translate: 0%;" id="slide_1" class="slide-container">
          <canvas style="box-shadow: 0 0px 0 3px var(---primary); border-radius: 1em; width: calc(100vw - 11em); height: calc(100dvh - 4em);" width="900" height="200" id="signatureCanvas"></canvas>
          <div style="display: flex; flex-direction: column;" class="buttons">
 
-            <button onclick="next_slide(2)" class="next-btn">
+            <button onclick="next_slide(1)" class="next-btn">
                <span class="material-symbols-outlined">arrow_forward</span>
             </button>
             <button id="clear" class="next-btn" style="background: #FF5449 !important; margin-top: 1em;">
@@ -125,10 +119,18 @@
     font-family: var(--the-robo-font);
     top: 12em;
     right: -2em;"><- Sign Here</label>
-                  <button style="display: none;" id="save">Save as PNG</button>
          </div>
       </div>
-
+      <div id="slide_2" style="translate: 500%; transform: translateY(-0em);" class="slide-container">
+         <div class="input-container">
+            <input style="font-family: var(--the-robo-font);" class="input-google" id="signature_email_input" autocomplete="off" type="email" />
+            <label style="font-family: var(--the-robo-font);" class="input-placeholder">Email</label>
+         </div>
+         <label style="font-family: var(--the-robo-font);" class="email-domain">@sanandrea.edu.mt</label>
+         <button onclick="next_slide(2)" class="next-btn">
+            <span class="material-symbols-outlined">arrow_forward</span>
+         </button>
+      </div>
       <div style="translate: 1500%;" id="slide_3" class="slide-container">
          <div style="display: flex;" class="buttons">
             <button id="agree_button" onclick="next_slide(3)" class="next-btn" style="background: #4CAF50 !important; padding: 2.5em; font-size: 4em;">
@@ -345,6 +347,9 @@
          </button>
          <button class="button-circle" style="border: none; scale:0.8" onclick="if (iekeeiie33frfr.innerText == 'fullscreen') {iekeeiie33frfr.innerText = 'fullscreen_exit'; document.body.requestFullscreen();} else {iekeeiie33frfr.innerText = 'fullscreen'; exitFullscreen()}"><span id="iekeeiie33frfr" class="material-symbols-outlined">
                fullscreen
+            </span></button>
+         <button class="button-circle" style="border: none; scale:0.8" onclick="window.location.reload()"><span class="material-symbols-outlined">
+               refresh
             </span></button>
          <select id="collection_select" style="display: none; width: 10em; margin: 0.2em; font-size: 18px;">
             <option value="books">Books</option>

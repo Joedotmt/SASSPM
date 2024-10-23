@@ -1152,10 +1152,29 @@ async function upload_signature(group)
 {
     const email = signature_email_input.value + "@sanandrea.edu.mt";
 
-    // Convert the canvas drawing to a Blob (image file)
+    // Get the original canvas and its context
+    const originalCanvas = canvas;
+    const originalContext = originalCanvas.getContext('2d');
+
+    // Calculate the desired dimensions as half of the original size
+    const desiredWidth = originalCanvas.width / 5;
+    const desiredHeight = originalCanvas.height / 5;
+
+    // Create a new canvas for the scaled-down image
+    const scaledCanvas = document.createElement('canvas');
+    const scaledContext = scaledCanvas.getContext('2d');
+
+    // Set the new canvas dimensions to half of the original dimensions
+    scaledCanvas.width = desiredWidth;
+    scaledCanvas.height = desiredHeight;
+
+    // Draw the original canvas image onto the smaller canvas, scaling it down by half
+    scaledContext.drawImage(originalCanvas, 0, 0, desiredWidth, desiredHeight);
+
+    // Convert the scaled-down canvas drawing to a Blob (image file)
     const signatureBlob = await new Promise((resolve) =>
     {
-        canvas.toBlob(resolve, 'image/png');
+        scaledCanvas.toBlob(resolve, 'image/png');
     });
 
     // Prepare the form data to include the image and the email/group data
@@ -1167,6 +1186,8 @@ async function upload_signature(group)
     // Submit the form data to PocketBase
     await pb.collection('borrowers').create(formData);
 }
+
+
 
 function next_slide(num)
 {
@@ -1181,8 +1202,8 @@ function next_slide(num)
             setTimeout(() =>
             {
                 window.location.reload();
-            }, 2000);
-        }, 2000);
+            }, 2);
+        }, 1000);
         return;
     }
     if (num == 4)
@@ -1197,13 +1218,20 @@ function next_slide(num)
             setTimeout(() =>
             {
                 window.location.reload();
-            }, 2000);
-        }, 2000);
+            }, 2);
+        }, 1000);
         return;
     }
 
     document.getElementById("slide_" + num).style.translate = "-200% 0%";
     document.getElementById("slide_" + (num + 1)).style.translate = "0% 0%";
+}
+
+function first_slide()
+{
+    document.getElementById("slide_1").style.translate = "0% 0%";
+    document.getElementById("slide_2").style.translate = "500% 0%";
+    document.getElementById("slide_3").style.translate = "1500% 0%";
 }
 
 
@@ -1318,10 +1346,17 @@ document.getElementById('clear').addEventListener('click', () =>
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black';
 });
-
-function delete_current_signature()
+document.getElementById('clear2').addEventListener('click', () =>
 {
-    pb.collection('borrowers').delete(dpdb_id.innerText.split(": ")[1]);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
+    signature_email_input.value = "";
+});
+
+async function delete_current_signature()
+{
+    await pb.collection('borrowers').delete(dpdb_id.innerText.split(": ")[1]);
     change_display_area_mode("none", display_area_borrower);
     list_selected_collection();
 }

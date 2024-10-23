@@ -829,8 +829,7 @@ body.hasHover .tooltip:hover .tooltiptext
 
 .list-area-list
 {
-    grid-area: list-area-list;
-    border-radius: 0.6em;
+    overflow-y: scroll;
 }
 
 .e00j430985t
