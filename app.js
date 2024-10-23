@@ -1194,7 +1194,7 @@ function next_slide(num)
     if (num == 3)
     {
         agree_button.style.transition = "1.2s cubic-bezier(0.33, 0.01, 0, 1)";
-        agree_button.style.padding = "12em";
+        agree_button.style.padding = "15em";
         upload_signature("Agree");
         setTimeout(() =>
         {
