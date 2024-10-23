@@ -1156,25 +1156,25 @@ async function upload_signature(group)
     const originalCanvas = canvas;
     const originalContext = originalCanvas.getContext('2d');
 
-    // Calculate the desired dimensions as half of the original size
-    const desiredWidth = originalCanvas.width / 5;
-    const desiredHeight = originalCanvas.height / 5;
+    // // Calculate the desired dimensions as half of the original size
+    // const desiredWidth = originalCanvas.width / 5;
+    // const desiredHeight = originalCanvas.height / 5;
 
-    // Create a new canvas for the scaled-down image
-    const scaledCanvas = document.createElement('canvas');
-    const scaledContext = scaledCanvas.getContext('2d');
+    // // Create a new canvas for the scaled-down image
+    // const scaledCanvas = document.createElement('canvas');
+    // const scaledContext = scaledCanvas.getContext('2d');
 
-    // Set the new canvas dimensions to half of the original dimensions
-    scaledCanvas.width = desiredWidth;
-    scaledCanvas.height = desiredHeight;
+    // // Set the new canvas dimensions to half of the original dimensions
+    // scaledCanvas.width = desiredWidth;
+    // scaledCanvas.height = desiredHeight;
 
-    // Draw the original canvas image onto the smaller canvas, scaling it down by half
-    scaledContext.drawImage(originalCanvas, 0, 0, desiredWidth, desiredHeight);
+    // // Draw the original canvas image onto the smaller canvas, scaling it down by half
+    // scaledContext.drawImage(originalCanvas, 0, 0, desiredWidth, desiredHeight);
 
     // Convert the scaled-down canvas drawing to a Blob (image file)
     const signatureBlob = await new Promise((resolve) =>
     {
-        scaledCanvas.toBlob(resolve, 'image/png');
+        originalCanvas.toBlob(resolve, 'image/png');
     });
 
     // Prepare the form data to include the image and the email/group data
