@@ -1055,13 +1055,13 @@ function getSearchOptions(collection)
             const bookExactFields = ["legacy_book_id", "book_id"];
             pbFilter = processTokens(search_filter_input.value, bookLazyFields, bookExactFields);
             pbFilter = applyBookFilters(pbFilter);
-            var pbSort = `${search_sortby_ascending_book.dataset.ascending}${j54f9954j.value}`;
+            var pbSort = "+email";//`${search_sortby_ascending_book.dataset.ascending}${j54f9954j.value}`;
             break;
         case "borrowers":
             const borrowerLazyFields = ["name", "surname", "group"];
             const borrowerExactFields = ["name", "surname", "group"];
             pbFilter = processTokens(search_filter_input_borrower.value, borrowerLazyFields, borrowerExactFields);
-            var pbSort = "-created"; // Default sort for borrowers
+            var pbSort = "+email"; // Default sort for borrowers
             break;
     }
 
