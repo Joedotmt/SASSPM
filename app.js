@@ -1202,7 +1202,7 @@ function next_slide(num)
             setTimeout(() =>
             {
                 window.location.reload();
-            }, 2);
+            }, 2000);
         }, 1000);
         return;
     }
@@ -1218,7 +1218,7 @@ function next_slide(num)
             setTimeout(() =>
             {
                 window.location.reload();
-            }, 2);
+            }, 2000);
         }, 1000);
         return;
     }
